@@ -3,15 +3,28 @@ import { useShop } from "../context/ShopContext";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 function Cart() {
-  const { cart, removeFromCart } = useShop();
-
+const {
+  cart,
+  removeFromCart,
+} = useShop();
   const subtotal = cart.reduce(
     (total, item) => total + item.price,
     0
   );
   const navigate = useNavigate();
 const [showLoginModal, setShowLoginModal] = useState(false);
+const user = JSON.parse(localStorage.getItem("user"));
 
+const handleCheckout = () => {
+
+  if (!user) {
+    setShowLoginModal(true);
+    return;
+  }
+
+  navigate("/checkout");
+
+};
   return (
     <MainLayout>
       <section className="max-w-7xl mx-auto px-6 py-20">
@@ -138,7 +151,7 @@ const [showLoginModal, setShowLoginModal] = useState(false);
               </div>
 
              <button
-  onClick={() => setShowLoginModal(true)}
+  onClick={handleCheckout}
   className="w-full mt-10 bg-black text-white py-4 rounded-full hover:bg-[#B08D57] transition"
 >
   Proceed to Checkout

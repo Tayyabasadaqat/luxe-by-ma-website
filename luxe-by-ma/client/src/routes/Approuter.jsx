@@ -15,8 +15,10 @@ import Shipping from "../pages/Shipping";
 import Returns from "../pages/Returns";
 import Privacy from "../pages/Privacy";
 import Terms from "../pages/Terms";
-
+import Profile from "../pages/Profile";
+import Orders from "../pages/Orders";
 import ScrollToTop from "../components/ScrollToTop";
+import Checkout from "../pages/Checkout";
 
 function Approuter() {
   return (
@@ -39,6 +41,9 @@ function Approuter() {
         <Route path="*" element={<Notfound />} />
         <Route path="/privacy" element={<Privacy />} />
         <Route path="/terms" element={<Terms />} />
+        <Route path="/orders" element={<Orders />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/checkout" element={<Checkout />} />
       </Routes>
     </BrowserRouter>
   );
