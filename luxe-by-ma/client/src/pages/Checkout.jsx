@@ -2,9 +2,16 @@ import MainLayout from "../layouts/MainLayout";
 import heroImage from "../assets/images/bag-17.png";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useShop } from "../context/ShopContext";
 
 function Checkout() {
   const navigate = useNavigate();
+  const { cart } = useShop();
+
+const subtotal = cart.reduce(
+  (total, item) => total + item.price,
+  0
+);
 
   const [form, setForm] = useState({
     fullName: "",
@@ -66,9 +73,12 @@ function Checkout() {
 
       {/* Form */}
 
-      <section className="max-w-3xl mx-auto px-6 py-20">
+<section className="max-w-7xl mx-auto px-6 py-20">
 
-        <form
+  <div className="grid lg:grid-cols-3 gap-12">
+        <div className="lg:col-span-2">
+
+<form
           onSubmit={handleContinue}
           className="bg-gray-50 p-10 rounded-3xl shadow-sm space-y-6"
         >
@@ -157,6 +167,92 @@ function Checkout() {
           </button>
 
         </form>
+        </div>
+        <div className="bg-gray-50 rounded-3xl p-8 h-fit sticky top-28">
+
+  <h2 className="text-2xl font-semibold">
+    Order Summary
+  </h2>
+
+  <div className="space-y-6 mt-8">
+
+    {cart.map((item) => (
+
+      <div
+        key={item.id}
+        className="flex gap-4"
+      >
+
+        <img
+          src={item.image}
+          alt={item.name}
+          className="w-24 h-24 rounded-2xl object-cover"
+        />
+
+        <div>
+
+          <h3 className="font-semibold">
+            {item.name}
+          </h3>
+
+          <p className="text-gray-500">
+            {item.category}
+          </p>
+
+          <p className="font-semibold mt-2">
+            PKR {item.price.toLocaleString()}
+          </p>
+
+        </div>
+
+      </div>
+
+    ))}
+
+  </div>
+
+  <hr className="my-8" />
+
+  <div className="flex justify-between">
+
+    <span>Items</span>
+
+    <span>{cart.length}</span>
+
+  </div>
+
+  <div className="flex justify-between mt-4">
+
+    <span>Shipping</span>
+
+    <span>FREE</span>
+
+  </div>
+
+  <div className="flex justify-between mt-4">
+
+    <span>Subtotal</span>
+
+    <span>
+      PKR {subtotal.toLocaleString()}
+    </span>
+
+  </div>
+
+  <hr className="my-8" />
+
+  <div className="flex justify-between text-xl font-semibold">
+
+    <span>Total</span>
+
+    <span>
+      PKR {subtotal.toLocaleString()}
+    </span>
+
+  </div>
+
+</div>
+</div>
 
       </section>
 

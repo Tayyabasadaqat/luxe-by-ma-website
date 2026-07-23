@@ -149,13 +149,12 @@ const handleCheckout = () => {
                 </span>
 
               </div>
-
-             <button
-  onClick={handleCheckout}
-  className="w-full mt-10 bg-black text-white py-4 rounded-full hover:bg-[#B08D57] transition"
->
-  Proceed to Checkout
-</button>
+              <button
+                onClick={handleCheckout}
+                className="w-full mt-10 bg-black text-white py-4 rounded-full hover:bg-[#B08D57] transition"
+              >
+                Proceed to Checkout
+              </button>
 
               <Link
                 to="/collection"

@@ -19,6 +19,7 @@ import Profile from "../pages/Profile";
 import Orders from "../pages/Orders";
 import ScrollToTop from "../components/ScrollToTop";
 import Checkout from "../pages/Checkout";
+import ReviewOrder from "../pages/ReviewOrder";
 
 function Approuter() {
   return (
@@ -44,6 +45,7 @@ function Approuter() {
         <Route path="/orders" element={<Orders />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/checkout" element={<Checkout />} />
+        <Route path="/review-order" element={<ReviewOrder />} />
       </Routes>
     </BrowserRouter>
   );
