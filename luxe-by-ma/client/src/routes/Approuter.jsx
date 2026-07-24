@@ -19,7 +19,7 @@ import Profile from "../pages/Profile";
 import Orders from "../pages/Orders";
 import ScrollToTop from "../components/ScrollToTop";
 import Checkout from "../pages/Checkout";
-import ReviewOrder from "../pages/ReviewOrder";
+import ReviewOrder from "../pages/ReviewOrders";
 
 function Approuter() {
   return (
