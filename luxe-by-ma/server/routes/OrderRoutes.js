@@ -32,12 +32,15 @@ router.post("/", (req, res) => {
     ],
     (err, result) => {
 
-      if (err) {
-        console.log(err);
-        return res.status(500).json({
-          message: "Database Error",
-        });
-      }
+     if (err) {
+
+    console.log("ORDER ERROR:", err);
+
+    return res.status(500).json({
+        message: err.sqlMessage || err.message
+    });
+
+}
 
       res.json({
         message: "Order placed successfully!",

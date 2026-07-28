@@ -25,7 +25,6 @@ function Approuter() {
   return (
     <BrowserRouter>
       <ScrollToTop />
-
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/collection" element={<Collection />} />
