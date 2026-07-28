@@ -21,43 +21,45 @@ function ReviewOrder() {
   );
   const [showSuccessModal, setShowSuccessModal] = useState(false);
 const [orderNumber, setOrderNumber] = useState(null);
+const [orderTotal, setOrderTotal] = useState(0);
 
   const placeOrder = async () => {
 
-    try {
-      console.log(user);
-console.log(shipping);
-      const response = await axios.post(
-  "http://localhost:5000/api/orders",
-  {
-    user_id: user.id,
-    total: subtotal,
-    address: shipping.address,
-    city: shipping.city,
-    postal_code: shipping.postalCode,
-    payment_method: shipping.payment,
-  }
-);
+  try {
 
-setOrderNumber(response.data.orderId);
+    const response = await axios.post(
+      "http://localhost:5000/api/orders",
+      {
+        user_id: user.id,
+        total: subtotal,
+        address: shipping.address,
+        city: shipping.city,
+        postal_code: shipping.postalCode,
+        payment_method: shipping.payment,
+      }
+    );
 
-clearCart();
+    setOrderNumber(response.data.orderId);
 
-setShowSuccessModal(true);
-}
+    // save total before clearing cart
+    setOrderTotal(subtotal);
 
-   catch (error) {
+    clearCart();
+
+    setShowSuccessModal(true);
+
+  } catch (error) {
 
     console.log(error.response?.data);
 
     alert(
-        error.response?.data?.message ||
-        "Failed to place order."
+      error.response?.data?.message ||
+      "Failed to place order."
     );
 
-}
+  }
 
-  };
+};
 
   return (
 
@@ -215,7 +217,7 @@ setShowSuccessModal(true);
               <span>Total</span>
 
               <span>
-                PKR {subtotal.toLocaleString()}
+                PKR {orderTotal.toLocaleString()}
               </span>
 
             </div>
@@ -237,8 +239,8 @@ setShowSuccessModal(true);
 
 <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50">
 
-<div className="bg-white rounded-3xl w-[92%] max-w-lg p-10 text-center shadow-2xl">
-
+<div className="bg-white rounded-3xl w-[92%] max-w-lg p-8 text-center shadow-2xl max-h-[90vh] overflow-y-auto">
+  
 <div className="w-20 h-20 rounded-full bg-green-100 mx-auto flex items-center justify-center">
 
 <span className="text-5xl text-green-600">
@@ -275,7 +277,7 @@ LX-{orderNumber}
 
 <p>
 <strong>Total:</strong>
-PKR {subtotal.toLocaleString()}
+PKR {orderTotal.toLocaleString()}
 </p>
 
 </div>
