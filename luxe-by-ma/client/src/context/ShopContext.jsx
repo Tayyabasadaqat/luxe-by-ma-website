@@ -14,7 +14,9 @@ export function ShopProvider({ children }) {
       setCart([...cart, product]);
     }
   };
-
+  const clearCart = () => {
+  setCart([]);
+};
   const removeFromCart = (id) => {
     setCart(cart.filter((item) => item.id !== id));
   };
@@ -43,6 +45,7 @@ export function ShopProvider({ children }) {
         removeFromCart,
         toggleWishlist,
         isInWishlist,
+        clearCart
       }}
     >
       {children}

@@ -3,6 +3,7 @@ import heroImage from "../assets/images/bag-17.png";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useShop } from "../context/ShopContext";
 import axios from "axios";
+import { useState } from "react";
 
 function ReviewOrder() {
   const navigate = useNavigate();
@@ -18,38 +19,43 @@ function ReviewOrder() {
     (total, item) => total + item.price,
     0
   );
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+const [orderNumber, setOrderNumber] = useState(null);
 
   const placeOrder = async () => {
 
     try {
+      console.log(user);
+console.log(shipping);
+      const response = await axios.post(
+  "http://localhost:5000/api/orders",
+  {
+    user_id: user.id,
+    total: subtotal,
+    address: shipping.address,
+    city: shipping.city,
+    postal_code: shipping.postalCode,
+    payment_method: shipping.payment,
+  }
+);
 
-      await axios.post(
-        "http://localhost:5000/api/orders",
-        {
-          user_id: user.id,
-          total: subtotal,
-          address: shipping.address,
-          city: shipping.city,
-          postal_code: shipping.postalCode,
-          payment_method: shipping.payment,
-        }
-      );
+setOrderNumber(response.data.orderId);
 
-      clearCart();
+clearCart();
 
-      alert("Order placed successfully!");
+setShowSuccessModal(true);
+}
 
-      navigate("/orders");
+   catch (error) {
 
-    }
+    console.log(error.response?.data);
 
-    catch (error) {
+    alert(
+        error.response?.data?.message ||
+        "Failed to place order."
+    );
 
-      alert("Failed to place order.");
-
-      console.log(error);
-
-    }
+}
 
   };
 
@@ -227,6 +233,98 @@ function ReviewOrder() {
 
       </section>
 
+      {showSuccessModal && (
+
+<div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50">
+
+<div className="bg-white rounded-3xl w-[92%] max-w-lg p-10 text-center shadow-2xl">
+
+<div className="w-20 h-20 rounded-full bg-green-100 mx-auto flex items-center justify-center">
+
+<span className="text-5xl text-green-600">
+✓
+</span>
+
+</div>
+
+<h2 className="text-4xl font-semibold mt-6">
+Thank You!
+</h2>
+
+<p className="text-gray-600 mt-4 leading-7">
+Your order has been placed successfully.
+</p>
+
+<div className="bg-gray-50 rounded-2xl p-6 mt-8 text-left space-y-3">
+
+<p>
+<strong>Order Number:</strong>
+{" "}
+LX-{orderNumber}
+</p>
+
+<p>
+<strong>Estimated Delivery:</strong>
+7–15 Business Days
+</p>
+
+<p>
+<strong>Payment:</strong>
+{shipping.payment}
+</p>
+
+<p>
+<strong>Total:</strong>
+PKR {subtotal.toLocaleString()}
+</p>
+
+</div>
+
+<div className="bg-gray-50 rounded-2xl p-6 mt-6 text-left">
+
+<h3 className="font-semibold mb-3">
+Shipping Address
+</h3>
+
+<p>{shipping.fullName}</p>
+
+<p>{shipping.address}</p>
+
+<p>
+{shipping.city} {shipping.postalCode}
+</p>
+
+</div>
+
+<div className="flex gap-4 mt-8">
+
+<button
+  onClick={() => {
+    setShowSuccessModal(false);
+    navigate("/collection");
+  }}
+  className="flex-1 border rounded-full py-3 hover:bg-gray-100 transition"
+>
+  Continue Shopping
+</button>
+
+<button
+  onClick={() => {
+    setShowSuccessModal(false);
+    navigate("/orders");
+  }}
+  className="flex-1 bg-black text-white rounded-full py-3 hover:bg-[#B08D57] transition"
+>
+  View My Orders
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+)}
     </MainLayout>
 
   );
