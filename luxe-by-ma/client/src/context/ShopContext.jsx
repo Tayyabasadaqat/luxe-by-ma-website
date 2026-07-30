@@ -31,10 +31,42 @@ export function ShopProvider({ children }) {
     .catch((err) => console.log(err));
 
 };
+const loadWishlist = () => {
+
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  if (!user) {
+    setWishlist([]);
+    return;
+  }
+
+  axios
+    .get(`http://localhost:5000/api/wishlist/${user.id}`)
+    .then((res) => {
+
+      const wishlistItems = res.data.map((item) => ({
+        ...JSON.parse(item.product_data),
+      }));
+       console.log("Converted wishlist:", wishlistItems);
+
+      setWishlist(wishlistItems);
+
+    })
+    .catch((err) => console.log(err));
+
+};
 
 useEffect(() => {
-  loadCart();
+
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  if(user){
+    loadCart();
+    loadWishlist();
+  }
+
 }, []);
+
   // CART
 
  const addToCart = async (product) => {
@@ -90,33 +122,42 @@ useEffect(() => {
 
 
   // WISHLIST
-
   const toggleWishlist = (product) => {
 
-    const exists = wishlist.find(
-      (item) => item.id === product.id
+  const exists = wishlist.find(
+    (item) => item.id === product.id
+  );
+
+  if (exists) {
+
+    setWishlist(
+      wishlist.filter((item) => item.id !== product.id)
     );
 
-    if (exists) {
+    return;
+  }
 
-      setWishlist(
-        wishlist.filter(
-          (item) => item.id !== product.id
-        )
-      );
+  setWishlist([
+    ...wishlist,
+    product
+  ]);
 
-    } else {
+  const user = JSON.parse(localStorage.getItem("user"));
 
-      setWishlist([
-        ...wishlist,
-        product
-      ]);
+  if (!user) return;
 
+  axios.post(
+    "http://localhost:5000/api/wishlist",
+    {
+      user_id: user.id,
+      product_data: product
     }
+  )
+  .then(() => console.log("Wishlist saved"))
+  .catch((err) => console.log(err));
 
-  };
-
-
+};
+  
   const isInWishlist = (id) => {
 
     return wishlist.some(
@@ -128,7 +169,7 @@ useEffect(() => {
 
   return (
     <ShopContext.Provider
-      value={{
+     value={{
   cart,
   wishlist,
   addToCart,
@@ -136,8 +177,9 @@ useEffect(() => {
   clearCart,
   toggleWishlist,
   isInWishlist,
-  loadCart
-}}
+  loadCart,
+  loadWishlist
+     }}
     >
       {children}
     </ShopContext.Provider>

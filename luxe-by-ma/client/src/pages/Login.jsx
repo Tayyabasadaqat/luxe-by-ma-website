@@ -7,12 +7,13 @@ import axios from "axios";
 
 function Login() {
   const navigate = useNavigate();
-  const { loadCart } = useShop();
-  const [form, setForm] = useState({
-    email: "",
-    password: "",
-  });
+  const { loadCart, loadWishlist } = useShop();
+ const [form, setForm] = useState({
+  email: "",
+  password: "",
+});
 
+const [showPopup, setShowPopup] = useState(false);
   const handleChange = (e) => {
     setForm({
       ...form,
@@ -36,9 +37,13 @@ function Login() {
       JSON.stringify(response.data.user)
     );
     await loadCart();
+    await loadWishlist();
 
-    alert(response.data.message);
+    setShowPopup(true);
 
+setTimeout(() => {
+  setShowPopup(false);
+}, 2000);
     navigate("/");
 
   } catch (error) {
@@ -52,7 +57,13 @@ function Login() {
 };
 
   return (
+
     <MainLayout>
+      {showPopup && (
+  <div className="fixed top-6 right-6 bg-black text-white px-6 py-4 rounded-xl shadow-lg z-50">
+    Login successful ✨
+  </div>
+)}
 
       {/* Hero */}
 
