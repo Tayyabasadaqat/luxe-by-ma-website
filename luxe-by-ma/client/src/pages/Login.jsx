@@ -2,10 +2,12 @@ import MainLayout from "../layouts/MainLayout";
 import heroImage from "../assets/images/bag-18.png";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { useShop } from "../context/ShopContext";
 import axios from "axios";
 
 function Login() {
   const navigate = useNavigate();
+  const { loadCart } = useShop();
   const [form, setForm] = useState({
     email: "",
     password: "",
@@ -33,6 +35,7 @@ function Login() {
       "user",
       JSON.stringify(response.data.user)
     );
+    await loadCart();
 
     alert(response.data.message);
 

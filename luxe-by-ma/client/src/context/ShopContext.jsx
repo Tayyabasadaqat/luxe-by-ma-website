@@ -1,26 +1,76 @@
-import { createContext, useContext, useState } from "react";
-
+import { products } from "../data/products";
+import { createContext, useContext, useState, useEffect } from "react";
+import axios from "axios";
 const ShopContext = createContext();
 
 export function ShopProvider({ children }) {
 
   const [cart, setCart] = useState([]);
   const [wishlist, setWishlist] = useState([]);
+  const loadCart = () => {
 
+  const user = JSON.parse(localStorage.getItem("user"));
 
+  if (!user) {
+    setCart([]);
+    return;
+  }
+
+  axios
+    .get(`http://localhost:5000/api/cart/${user.id}`)
+    .then((res) => {
+
+      const cartItems = res.data.map((item) => ({
+        ...JSON.parse(item.product_data),
+        quantity: item.quantity,
+      }));
+
+      setCart(cartItems);
+
+    })
+    .catch((err) => console.log(err));
+
+};
+
+useEffect(() => {
+  loadCart();
+}, []);
   // CART
 
-  const addToCart = (product) => {
+ const addToCart = async (product) => {
 
-    const exists = cart.find(
-      (item) => item.id === product.id
+  const exists = cart.find(
+    (item) => item.id === product.id
+  );
+
+  if (exists) return;
+
+  setCart([...cart, product]);
+
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  if (!user) return;
+
+  try {
+
+    await axios.post(
+      "http://localhost:5000/api/cart",
+      {
+        user_id: user.id,
+        product_data: JSON.stringify(product),
+        quantity: 1,
+      }
     );
 
-    if (!exists) {
-      setCart([...cart, product]);
-    }
+  }
 
-  };
+  catch (error) {
+
+    console.log(error);
+
+  }
+
+};
 
 
   const removeFromCart = (id) => {
@@ -79,14 +129,15 @@ export function ShopProvider({ children }) {
   return (
     <ShopContext.Provider
       value={{
-        cart,
-        wishlist,
-        addToCart,
-        removeFromCart,
-        clearCart,
-        toggleWishlist,
-        isInWishlist
-      }}
+  cart,
+  wishlist,
+  addToCart,
+  removeFromCart,
+  clearCart,
+  toggleWishlist,
+  isInWishlist,
+  loadCart
+}}
     >
       {children}
     </ShopContext.Provider>
