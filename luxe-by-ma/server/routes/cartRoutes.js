@@ -26,6 +26,7 @@ router.get("/:userId", (req, res) => {
 
 });
 
+
 // ======================
 // SAVE CART ITEM
 // ======================
@@ -39,15 +40,12 @@ router.post("/", (req, res) => {
     } = req.body;
 
     db.query(
-
         "INSERT INTO cart(user_id, product_data, quantity) VALUES(?,?,?)",
-
         [
-    user_id,
-    product_data,
-    quantity
+            user_id,
+            product_data,
+            quantity
         ],
-
         (err, result) => {
 
             if (err) {
@@ -61,9 +59,46 @@ router.post("/", (req, res) => {
             });
 
         }
-
     );
 
 });
+
+
+// ======================
+// DELETE CART ITEM
+// ======================
+
+router.delete("/:userId/:productId", (req, res) => {
+
+    const { userId, productId } = req.params;
+
+    const sql = `
+        DELETE FROM cart
+        WHERE user_id = ?
+        AND JSON_EXTRACT(product_data, '$.id') = ?
+    `;
+
+    db.query(
+        sql,
+        [userId, productId],
+        (err, result) => {
+
+            if (err) {
+                console.log("DELETE CART ERROR:", err);
+
+                return res.status(500).json({
+                    message: "Failed to remove cart item"
+                });
+            }
+
+            res.json({
+                message: "Cart item removed"
+            });
+
+        }
+    );
+
+});
+
 
 module.exports = router;

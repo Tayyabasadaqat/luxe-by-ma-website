@@ -105,13 +105,29 @@ useEffect(() => {
 };
 
 
-  const removeFromCart = (id) => {
+ const removeFromCart = (id) => {
 
-    setCart(
-      cart.filter((item) => item.id !== id)
-    );
+  // Remove immediately from frontend
+  setCart(
+    cart.filter((item) => item.id !== id)
+  );
 
-  };
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  if (!user) return;
+
+  axios
+    .delete(
+      `http://localhost:5000/api/cart/${user.id}/${id}`
+    )
+    .then(() => {
+      console.log("Cart item deleted from database");
+    })
+    .catch((err) => {
+      console.log("Cart delete error:", err);
+    });
+
+};
 
 
   const clearCart = () => {
@@ -130,13 +146,28 @@ useEffect(() => {
 
   if (exists) {
 
-    setWishlist(
-      wishlist.filter((item) => item.id !== product.id)
-    );
+  // Remove immediately from frontend
+  setWishlist(
+    wishlist.filter((item) => item.id !== product.id)
+  );
 
-    return;
-  }
+  const user = JSON.parse(localStorage.getItem("user"));
 
+  if (!user) return;
+
+  axios
+    .delete(
+      `http://localhost:5000/api/wishlist/${user.id}/${product.id}`
+    )
+    .then(() => {
+      console.log("Wishlist item deleted from database");
+    })
+    .catch((err) => {
+      console.log("Wishlist delete error:", err);
+    });
+
+  return;
+}
   setWishlist([
     ...wishlist,
     product
