@@ -20,6 +20,8 @@ import Orders from "../pages/Orders";
 import ScrollToTop from "../components/ScrollToTop";
 import Checkout from "../pages/Checkout";
 import ReviewOrder from "../pages/ReviewOrders";
+import Admin from "../pages/Admin";
+import AdminLogin from "../pages/AdminLogin";
 
 function Approuter() {
   return (
@@ -45,6 +47,8 @@ function Approuter() {
         <Route path="/profile" element={<Profile />} />
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/review-order" element={<ReviewOrder />} />
+        <Route path="/admin" element={<Admin />} />
+        <Route path="/admin-login" element={<AdminLogin />} />
       </Routes>
     </BrowserRouter>
   );
